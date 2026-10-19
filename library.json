@@ -1,6 +1,6 @@
 {
   "name": "SuperJupiterSensorQuality",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Sensor data quality checks by SuperJupiter for Arduino, ESP32 and C++11. Preserve raw readings and flag invalid data, range, rate, gaps, stale and possibly stuck signals. Hardware validation pending.",
   "keywords": [
     "sensor",

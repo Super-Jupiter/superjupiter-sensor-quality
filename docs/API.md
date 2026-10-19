@@ -116,3 +116,10 @@ Compile with normal floating-point semantics. Fast-math/finite-math-only options
 are unsupported because they may assume NaN and infinity cannot occur. Known
 GCC/Clang macros for these modes are rejected by the public header. This is not
 a guarantee that every compiler's incompatible option is detectable.
+
+
+## 0.2.1 review clarifications
+
+See [INTEROPERABILITY.md](INTEROPERABILITY.md) for units, timestamp horizons, numeric validity, payload constraints and storage synchronisation.
+
+- Explicit numeric-error flag and zero unavailable rate for reduced-precision rate overflow; raw readings retained.

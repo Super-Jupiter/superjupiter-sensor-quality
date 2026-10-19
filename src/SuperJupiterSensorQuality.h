@@ -3,11 +3,13 @@
 #ifndef SUPERJUPITER_SENSOR_QUALITY_H
 #define SUPERJUPITER_SENSOR_QUALITY_H
 
-#if defined(__FAST_MATH__) || (defined(__FINITE_MATH_ONLY__) && __FINITE_MATH_ONLY__ > 0)
-#error "SuperJupiter SensorQuality requires IEEE non-finite checks; disable fast-math/finite-math-only."
+#if defined(__FAST_MATH__) ||                                                  \
+    (defined(__FINITE_MATH_ONLY__) && __FINITE_MATH_ONLY__ > 0)
+#error                                                                         \
+    "SuperJupiter SensorQuality requires IEEE non-finite checks; disable fast-math/finite-math-only."
 #endif
 
-#define SUPERJUPITER_SENSOR_QUALITY_VERSION "0.2.0"
+#define SUPERJUPITER_SENSOR_QUALITY_VERSION "0.2.1"
 
 #include <float.h>
 #include <stdint.h>
@@ -25,43 +27,47 @@ enum Flag : uint16_t {
   SampleGap = 1U << 5,
   Stale = 1U << 6,
   InvalidTimestamp = 1U << 7,
-  InvalidConfiguration = 1U << 8
+  InvalidConfiguration = 1U << 8,
+  NumericError = 1U << 9
 };
 
 struct Config {
   bool rangeEnabled = false;
   float minimum = 0.0f;
   float maximum = 100.0f;
-  float maxRatePerSecond = 0.0f;  // 0 disables rate checking.
-  uint32_t expectedIntervalMs = 0;  // 0 disables gap checking.
+  float maxRatePerSecond = 0.0f;   // 0 disables rate checking.
+  uint32_t expectedIntervalMs = 0; // 0 disables gap checking.
   uint32_t gapToleranceMs = 0;
-  uint32_t staleAfterMs = 0;  // 0 disables staleness checking.
-  uint32_t stuckAfterMs = 0;  // 0 disables stuck checking.
-  float stuckTolerance = 0.0f;  // Absolute distance from the run's first value.
+  uint32_t staleAfterMs = 0;   // 0 disables staleness checking.
+  uint32_t stuckAfterMs = 0;   // 0 disables stuck checking.
+  float stuckTolerance = 0.0f; // Absolute distance from the run's first value.
 };
 
 struct Result {
   uint16_t flags = NoData;
-  float value = 0.0f;  // Unmodified last submitted value, including NaN/Inf.
+  float value = 0.0f; // Unmodified last submitted value, including NaN/Inf.
   uint32_t sampledAtMs = 0;
-  uint32_t intervalMs = 0;  // Between observations, not sensor conversion time.
+  uint32_t intervalMs = 0; // Between observations, not sensor conversion time.
   double ratePerSecond = 0.0;
   bool hasReading = false;
   bool hasRate = false;
 
-  bool has(Flag flag) const { return (flags & static_cast<uint16_t>(flag)) != 0; }
+  bool has(Flag flag) const {
+    return (flags & static_cast<uint16_t>(flag)) != 0;
+  }
   bool healthy() const { return flags == None; }
 };
 
-// One instance per scalar sensor channel. No heap, I/O, clock reads or filtering.
-// Call from one task; synchronise externally if sharing across tasks or ISRs.
+// One instance per scalar sensor channel. No heap, I/O, clock reads or
+// filtering. Call from one task; synchronise externally if sharing across tasks
+// or ISRs.
 class SensorQuality {
- public:
-  explicit SensorQuality(const Config& config = Config()) : config_(config) {
+public:
+  explicit SensorQuality(const Config &config = Config()) : config_(config) {
     reset();
   }
 
-  static bool validConfig(const Config& config) {
+  static bool validConfig(const Config &config) {
     return (!config.rangeEnabled ||
             (finite(config.minimum) && finite(config.maximum) &&
              config.minimum <= config.maximum)) &&
@@ -75,12 +81,13 @@ class SensorQuality {
   }
 
   bool configured() const { return configured_; }
-  const Config& config() const { return config_; }
+  const Config &config() const { return config_; }
 
   void reset() {
     configured_ = validConfig(config_);
     last_ = Result();
-    if (!configured_) last_.flags |= InvalidConfiguration;
+    if (!configured_)
+      last_.flags |= InvalidConfiguration;
     haveObservation_ = false;
     haveUsable_ = false;
     havePrevious_ = false;
@@ -110,11 +117,14 @@ class SensorQuality {
         return result;
       }
     }
-    if (haveUsable_) usableAgeMs_ = boundedAdd(usableAgeMs_, result.intervalMs);
+    if (haveUsable_)
+      usableAgeMs_ = boundedAdd(usableAgeMs_, result.intervalMs);
 
-    const bool gap = haveObservation_ && config_.expectedIntervalMs != 0 &&
-                     result.intervalMs > config_.expectedIntervalMs + config_.gapToleranceMs;
-    if (gap) result.flags |= SampleGap;
+    const bool gap =
+        haveObservation_ && config_.expectedIntervalMs != 0 &&
+        result.intervalMs > config_.expectedIntervalMs + config_.gapToleranceMs;
+    if (gap)
+      result.flags |= SampleGap;
 
     // A gap or invalid reading breaks continuity. We cannot infer a constant
     // signal, or its local rate, across observations we do not have.
@@ -138,7 +148,9 @@ class SensorQuality {
         const double rate = (static_cast<double>(value) - previousValue_) /
                             (static_cast<double>(elapsed) / 1000.0);
         result.hasRate = finiteDouble(rate);
-        result.ratePerSecond = rate;
+        result.ratePerSecond = result.hasRate ? rate : 0.0;
+        if (!result.hasRate)
+          result.flags |= NumericError;
         if (config_.maxRatePerSecond != 0 &&
             (!result.hasRate || absolute(rate) > config_.maxRatePerSecond)) {
           result.flags |= RateExceeded;
@@ -150,8 +162,8 @@ class SensorQuality {
       previousAt_ = sampledAtMs;
       havePrevious_ = true;
 
-      if (!haveAnchor_ ||
-          absolute(static_cast<double>(value) - anchorValue_) > config_.stuckTolerance) {
+      if (!haveAnchor_ || absolute(static_cast<double>(value) - anchorValue_) >
+                              config_.stuckTolerance) {
         anchorValue_ = value;
         stuckAgeMs_ = 0;
         haveAnchor_ = true;
@@ -176,20 +188,23 @@ class SensorQuality {
   // sample or advance the clock. The value remains the last observed value.
   Result inspect(uint32_t nowMs) const {
     Result result = last_;
-    if (!configured_) return result;
-    if (!haveObservation_) return result;
+    if (!configured_)
+      return result;
+    if (!haveObservation_)
+      return result;
     if (nowMs - last_.sampledAtMs > maxInterval()) {
       result.flags |= InvalidTimestamp;
       return result;
     }
     if (config_.staleAfterMs != 0 &&
-        (!haveUsable_ || boundedAdd(usableAgeMs_, nowMs - last_.sampledAtMs) >= config_.staleAfterMs)) {
+        (!haveUsable_ || boundedAdd(usableAgeMs_, nowMs - last_.sampledAtMs) >=
+                             config_.staleAfterMs)) {
       result.flags |= Stale;
     }
     return result;
   }
 
- private:
+private:
   static uint32_t maxInterval() { return 0x7fffffffUL; }
   static uint32_t boundedAdd(uint32_t a, uint32_t b) {
     return b >= maxInterval() - a ? maxInterval() : a + b;
@@ -216,22 +231,35 @@ class SensorQuality {
   uint32_t stuckAgeMs_ = 0;
 };
 
-inline const char* flagName(Flag flag) {
+inline const char *flagName(Flag flag) {
   switch (flag) {
-    case None: return "healthy";
-    case NoData: return "no_data";
-    case InvalidNumber: return "invalid_number";
-    case OutOfRange: return "out_of_range";
-    case RateExceeded: return "rate_exceeded";
-    case Stuck: return "possibly_stuck";
-    case SampleGap: return "sample_gap";
-    case Stale: return "stale";
-    case InvalidTimestamp: return "invalid_timestamp";
-    case InvalidConfiguration: return "invalid_configuration";
-    default: return "unknown";
+  case None:
+    return "healthy";
+  case NoData:
+    return "no_data";
+  case InvalidNumber:
+    return "invalid_number";
+  case OutOfRange:
+    return "out_of_range";
+  case RateExceeded:
+    return "rate_exceeded";
+  case Stuck:
+    return "possibly_stuck";
+  case SampleGap:
+    return "sample_gap";
+  case Stale:
+    return "stale";
+  case InvalidTimestamp:
+    return "invalid_timestamp";
+  case InvalidConfiguration:
+    return "invalid_configuration";
+  case NumericError:
+    return "numeric_error";
+  default:
+    return "unknown";
   }
 }
 
-}  // namespace sensor_quality
-}  // namespace superjupiter
+} // namespace sensor_quality
+} // namespace superjupiter
 #endif

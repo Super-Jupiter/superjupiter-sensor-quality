@@ -33,17 +33,17 @@ Your sensor driver -> raw value + sample timestamp -> SensorQuality -> quality f
 ### Arduino IDE
 
 1. In Library Manager search for **SuperJupiterSensorQuality** by **SuperJupiter**.
-2. Install **0.2.0** once it appears in your refreshed index.
+2. Install **0.2.1** once it appears in your refreshed index.
 3. Open **File > Examples > SuperJupiterSensorQuality > SyntheticTemperature**.
 4. Select your board, upload and open Serial Monitor at **115200 baud**.
 
 Library Manager registration is live. New tags require index processing; check
-that your selected version is 0.2.0 rather than assuming a cached index is current.
+that your selected version is 0.2.1 rather than assuming a cached index is current.
 For an exact CLI installation:
 
 ```sh
 arduino-cli lib update-index
-arduino-cli lib install "SuperJupiterSensorQuality@0.2.0"
+arduino-cli lib install "SuperJupiterSensorQuality@0.2.1"
 ```
 
 Alternatively, download the source ZIP from [Releases](https://github.com/Super-Jupiter/superjupiter-sensor-quality/releases)
@@ -55,11 +55,11 @@ Use the [official registry package](https://registry.platformio.org/libraries/su
 with an **exact version pin**:
 
 ```ini
-lib_deps = superjupiter/SuperJupiterSensorQuality@0.2.0
+lib_deps = superjupiter/SuperJupiterSensorQuality@0.2.1
 ```
 
-`@^0.2.0` is a compatible version range, not an exact pin. A Git tag is an
-alternative: `https://github.com/Super-Jupiter/superjupiter-sensor-quality.git#v0.2.0`.
+`@^0.2.1` is a compatible version range, not an exact pin. A Git tag is an
+alternative: `https://github.com/Super-Jupiter/superjupiter-sensor-quality.git#v0.2.1`.
 Package name, repository and include header are unchanged. The C++ namespace
 changed in 0.2.0; see [migration](https://github.com/Super-Jupiter/superjupiter-sensor-quality/blob/main/docs/MIGRATION.md).
 
@@ -206,3 +206,10 @@ and the same target. See [build and release conventions](https://github.com/Supe
 
 Do not compile this library with fast-math or finite-math-only assumptions:
 invalid-number detection requires non-finite values to retain their meaning.
+
+
+## Compatibility review 0.2.1
+
+This patch includes independent regression tests and a reviewed [interoperability contract](https://github.com/Super-Jupiter/superjupiter-sensor-quality/blob/v0.2.1/docs/INTEROPERABILITY.md). Hardware validation pending.
+
+- Explicit numeric-error flag and zero unavailable rate for reduced-precision rate overflow; raw readings retained.

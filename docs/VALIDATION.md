@@ -89,3 +89,8 @@ Passing host tests and compilation do not demonstrate physical behaviour.
    evidence. Never publish credentials, precise private locations or customer data.
 
 This is a data-quality helper, not a safety-rated control or diagnostic system.
+
+
+## Release 0.2.1
+
+Hardware validation pending. Independent review regressions run under GCC/Clang sanitizers, source/archive/relocated CMake consumers and the four-board compilation matrix. The exact release commit CI and release receipts are authoritative; a historical failure is not a current passing result. No physical device, sensor or storage power-loss test is claimed.

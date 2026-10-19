@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(SuperJupiterSensorQuality VERSION 0.2.0 LANGUAGES CXX)
+project(SuperJupiterSensorQuality VERSION 0.2.1 LANGUAGES CXX)
 
 set(_superjupiter_sensor_quality_top_level OFF)
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
@@ -19,6 +19,9 @@ target_compile_features(SuperJupiterSensorQuality INTERFACE cxx_std_11)
 
 if(SUPERJUPITER_SENSOR_QUALITY_BUILD_TESTS)
   enable_testing()
+  add_executable(superjupiter-sensor-quality-review tests/review_regressions.cpp)
+  target_link_libraries(superjupiter-sensor-quality-review PRIVATE SuperJupiter::SensorQuality)
+  add_test(NAME superjupiter-sensor-quality-review COMMAND superjupiter-sensor-quality-review)
   add_executable(superjupiter-sensor-quality-tests tests/test_sensor_quality.cpp)
   target_link_libraries(superjupiter-sensor-quality-tests PRIVATE SuperJupiter::SensorQuality)
   add_test(NAME superjupiter-sensor-quality-tests COMMAND superjupiter-sensor-quality-tests)

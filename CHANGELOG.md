@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.1 - 2026-10-19
+
+- Explicit numeric-error flag and zero unavailable rate for reduced-precision rate overflow; raw readings retained.
+- Added focused review regression tests and shared interoperability guidance. Hardware validation pending.
+
+
 ## 0.2.0 - 2026-10-19
 
 - Breaking API convention: types, flags and helpers move to
