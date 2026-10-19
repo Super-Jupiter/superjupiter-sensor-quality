@@ -1,0 +1,13 @@
+{
+  "name": "SuperJupiter SensorQuality",
+  "version": "0.1.0",
+  "description": "Allocation-free sensor data quality checks for Arduino, ESP32 and portable C++11. Preserve raw readings and flag range, rate, gaps, stale data and possibly stuck signals.",
+  "keywords": ["sensor", "data-quality", "esp32", "arduino", "temperature"],
+  "repository": {"type": "git", "url": "https://github.com/Super-Jupiter/superjupiter-sensor-quality.git"},
+  "homepage": "https://github.com/Super-Jupiter/superjupiter-sensor-quality",
+  "authors": [{"name": "SuperJupiter", "url": "https://www.superjupiter.net", "maintainer": true}],
+  "license": "MIT",
+  "frameworks": "*",
+  "platforms": "*",
+  "headers": ["SuperJupiterSensorQuality.h"]
+}

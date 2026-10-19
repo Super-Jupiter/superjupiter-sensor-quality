@@ -1,0 +1,7 @@
+/build/
+/.pio/
+/.cache/
+*.exe
+*.o
+*.obj
+.DS_Store
