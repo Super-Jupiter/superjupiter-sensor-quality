@@ -3,10 +3,17 @@
 #ifndef SUPERJUPITER_SENSOR_QUALITY_H
 #define SUPERJUPITER_SENSOR_QUALITY_H
 
+#if defined(__FAST_MATH__) || (defined(__FINITE_MATH_ONLY__) && __FINITE_MATH_ONLY__ > 0)
+#error "SuperJupiter SensorQuality requires IEEE non-finite checks; disable fast-math/finite-math-only."
+#endif
+
+#define SUPERJUPITER_SENSOR_QUALITY_VERSION "0.2.0"
+
 #include <float.h>
 #include <stdint.h>
 
 namespace superjupiter {
+namespace sensor_quality {
 
 enum Flag : uint16_t {
   None = 0,
@@ -225,5 +232,6 @@ inline const char* flagName(Flag flag) {
   }
 }
 
+}  // namespace sensor_quality
 }  // namespace superjupiter
 #endif

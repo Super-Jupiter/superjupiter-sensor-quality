@@ -6,6 +6,11 @@ flags and actual flags. Redact credentials and private data.
 
 Before proposing a change:
 
+- Read docs/CONVENTIONS.md and preserve the component namespace and registered
+  package identity. Breaking API changes need a migration note and version bump.
+- Run `python3 tools/check_release.py` and `python3 tools/verify_consumers.py`
+  in addition to the host suite. Registry exports must include consumer tools.
+
 - Run the host suite: `cmake -S . -B build`, `cmake --build build`, then
   `ctest --test-dir build --output-on-failure`.
 - Add a focused regression case for any changed behaviour.

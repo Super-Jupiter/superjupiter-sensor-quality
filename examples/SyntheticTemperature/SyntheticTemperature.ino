@@ -3,8 +3,8 @@
 #include <SuperJupiterSensorQuality.h>
 #include <math.h>
 
-superjupiter::Config temperatureConfig() {
-  superjupiter::Config config;
+superjupiter::sensor_quality::Config temperatureConfig() {
+  superjupiter::sensor_quality::Config config;
   config.rangeEnabled = true;
   config.minimum = -40;
   config.maximum = 125;
@@ -17,26 +17,26 @@ superjupiter::Config temperatureConfig() {
   return config;
 }
 
-superjupiter::SensorQuality quality(temperatureConfig());
+superjupiter::sensor_quality::SensorQuality quality(temperatureConfig());
 uint32_t lastTick = 0;
 uint32_t step = 0;
 
-void printResult(const superjupiter::Result& result) {
+void printResult(const superjupiter::sensor_quality::Result& result) {
   Serial.print(result.sampledAtMs);
   Serial.print(',');
   Serial.print(result.value, 3);
   Serial.print(',');
   if (result.healthy()) Serial.print("healthy");
-  const superjupiter::Flag flags[] = {
-    superjupiter::NoData, superjupiter::InvalidNumber, superjupiter::OutOfRange,
-    superjupiter::RateExceeded, superjupiter::Stuck, superjupiter::SampleGap,
-    superjupiter::Stale, superjupiter::InvalidTimestamp, superjupiter::InvalidConfiguration
+  const superjupiter::sensor_quality::Flag flags[] = {
+    superjupiter::sensor_quality::NoData, superjupiter::sensor_quality::InvalidNumber, superjupiter::sensor_quality::OutOfRange,
+    superjupiter::sensor_quality::RateExceeded, superjupiter::sensor_quality::Stuck, superjupiter::sensor_quality::SampleGap,
+    superjupiter::sensor_quality::Stale, superjupiter::sensor_quality::InvalidTimestamp, superjupiter::sensor_quality::InvalidConfiguration
   };
   bool separator = false;
   for (unsigned i = 0; i < sizeof(flags) / sizeof(flags[0]); ++i) {
     if (result.has(flags[i])) {
       if (separator) Serial.print('|');
-      Serial.print(superjupiter::flagName(flags[i]));
+      Serial.print(superjupiter::sensor_quality::flagName(flags[i]));
       separator = true;
     }
   }

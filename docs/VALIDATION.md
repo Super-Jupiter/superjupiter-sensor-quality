@@ -1,5 +1,24 @@
 # Validation record
 
+## Release 0.2.0
+
+**Physical hardware validation: pending.** No real board or sensor was executed
+for this release. Namespace/build/release improvements do not validate physical
+behaviour. No new accuracy, acquisition-rate, memory or runtime claim is made.
+
+Automated checks for this release include the original eight host groups plus
+half-range/saturated-age and numeric/combined-flag boundaries, namespace isolation,
+GCC/Clang sanitizers, rejection of incompatible fast-math, CMake subproject and
+relocated installed consumers, exported package consistency and a PlatformIO
+package consumer. Both Arduino examples are compiled for the existing exact
+ESP32, ESP32-S3, ESP32-C3 and Uno matrix. Compilation is not execution.
+
+These describe the checked-in release gates. Consult the actual
+[v0.2.0 CI](https://github.com/Super-Jupiter/superjupiter-sensor-quality/actions)
+before claiming a pass. Release checksum and public registry availability are
+verified separately after publication. See [migration](MIGRATION.md) for the
+deliberate 0.x API change. No proprietary domain models or customer data added.
+
 ## Release 0.1.2
 
 Registry README link and version metadata update only. The monitor and tests are

@@ -1,6 +1,9 @@
 # API and semantics
 
-Include `SuperJupiterSensorQuality.h`. All types are in namespace `superjupiter`.
+Since 0.2.0, types and flags are in the component namespace
+`superjupiter::sensor_quality`; see [MIGRATION.md](MIGRATION.md).
+
+Include `SuperJupiterSensorQuality.h`. All types are in namespace `superjupiter::sensor_quality`.
 One `SensorQuality` instance monitors one scalar channel. Values use `float`;
 rates use `double`, whose precision depends on the target architecture.
 
@@ -79,7 +82,7 @@ silence is a freshness problem, not proof of a constant measured signal.
 
 ## Result
 
-`flags` is a bitmask. Use `has(superjupiter::Stale)` to test an individual flag.
+`flags` is a bitmask. Use `has(superjupiter::sensor_quality::Stale)` to test an individual flag.
 `healthy()` means no configured quality check raised a flag; it is not an accuracy
 guarantee. `hasReading` distinguishes a real observation from the default zero.
 `hasRate` distinguishes a calculated rate from the default zero rate.
@@ -108,3 +111,8 @@ resolution and expected dynamics.
 There is no locking. Call from one execution context, or synchronise externally.
 The API makes no ISR-safety or hard-real-time guarantees. It has no heap
 allocation and stores bounded state; it does not store a sample history.
+
+Compile with normal floating-point semantics. Fast-math/finite-math-only options
+are unsupported because they may assume NaN and infinity cannot occur. Known
+GCC/Clang macros for these modes are rejected by the public header. This is not
+a guarantee that every compiler's incompatible option is detectable.

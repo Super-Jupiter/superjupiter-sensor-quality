@@ -1,16 +1,48 @@
 {
   "name": "SuperJupiterSensorQuality",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Sensor data quality checks by SuperJupiter for Arduino, ESP32 and C++11. Preserve raw readings and flag invalid data, range, rate, gaps, stale and possibly stuck signals. Hardware validation pending.",
-  "keywords": ["sensor", "data-quality", "esp32", "arduino", "temperature"],
-  "repository": {"type": "git", "url": "https://github.com/Super-Jupiter/superjupiter-sensor-quality.git"},
+  "keywords": [
+    "sensor",
+    "data-quality",
+    "esp32",
+    "arduino",
+    "temperature"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Super-Jupiter/superjupiter-sensor-quality.git"
+  },
   "homepage": "https://github.com/Super-Jupiter/superjupiter-sensor-quality",
-  "authors": [{"name": "SuperJupiter", "url": "https://www.superjupiter.net", "maintainer": true}],
+  "authors": [
+    {
+      "name": "SuperJupiter",
+      "url": "https://www.superjupiter.net",
+      "maintainer": true
+    }
+  ],
   "license": "MIT",
   "frameworks": "*",
   "platforms": "*",
-  "headers": ["SuperJupiterSensorQuality.h"],
+  "headers": [
+    "SuperJupiterSensorQuality.h"
+  ],
   "export": {
-    "include": ["src/*", "examples/*", "docs/*", "tests/*", "tools/*", "README.md", "LICENSE", "CHANGELOG.md", "CONTRIBUTING.md", "SECURITY.md", "CMakeLists.txt", "library.json", "library.properties"]
+    "include": [
+      "src/*",
+      "examples/*",
+      "docs/*",
+      "tests/*",
+      "tools/*",
+      "README.md",
+      "LICENSE",
+      "CHANGELOG.md",
+      "CONTRIBUTING.md",
+      "SECURITY.md",
+      "CMakeLists.txt",
+      "library.json",
+      "library.properties",
+      "cmake/*"
+    ]
   }
 }

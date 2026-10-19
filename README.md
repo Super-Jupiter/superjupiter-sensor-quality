@@ -32,39 +32,44 @@ Your sensor driver -> raw value + sample timestamp -> SensorQuality -> quality f
 
 ### Arduino IDE
 
-1. Download the source ZIP from [Releases](https://github.com/Super-Jupiter/superjupiter-sensor-quality/releases).
-2. In Arduino IDE choose **Sketch > Include Library > Add .ZIP Library**.
+1. In Library Manager search for **SuperJupiterSensorQuality** by **SuperJupiter**.
+2. Install **0.2.0** once it appears in your refreshed index.
 3. Open **File > Examples > SuperJupiterSensorQuality > SyntheticTemperature**.
 4. Select your board, upload and open Serial Monitor at **115200 baud**.
 
-Arduino has accepted [Library Manager registration](https://github.com/arduino/library-registry/pull/9427).
-Search for **SuperJupiterSensorQuality** in Library Manager once the index updates.
-Registration acceptance and download-index availability are separate steps; ZIP
-installation remains available while the index is updating.
+Library Manager registration is live. New tags require index processing; check
+that your selected version is 0.2.0 rather than assuming a cached index is current.
+For an exact CLI installation:
+
+```sh
+arduino-cli lib update-index
+arduino-cli lib install "SuperJupiterSensorQuality@0.2.0"
+```
+
+Alternatively, download the source ZIP from [Releases](https://github.com/Super-Jupiter/superjupiter-sensor-quality/releases)
+and choose **Sketch > Include Library > Add .ZIP Library**.
 
 ### PlatformIO
 
-Pin the release explicitly in your project's `platformio.ini`:
+Use the [official registry package](https://registry.platformio.org/libraries/superjupiter/SuperJupiterSensorQuality)
+with an **exact version pin**:
 
 ```ini
-lib_deps =
-    https://github.com/Super-Jupiter/superjupiter-sensor-quality.git#v0.1.2
+lib_deps = superjupiter/SuperJupiterSensorQuality@0.2.0
 ```
 
-The [PlatformIO Registry package](https://registry.platformio.org/libraries/superjupiter/SuperJupiterSensorQuality)
-is `superjupiter/SuperJupiterSensorQuality`. Install it as:
-
-```ini
-lib_deps = superjupiter/SuperJupiterSensorQuality@^0.1.2
-```
+`@^0.2.0` is a compatible version range, not an exact pin. A Git tag is an
+alternative: `https://github.com/Super-Jupiter/superjupiter-sensor-quality.git#v0.2.0`.
+Package name, repository and include header are unchanged. The C++ namespace
+changed in 0.2.0; see [migration](https://github.com/Super-Jupiter/superjupiter-sensor-quality/blob/main/docs/MIGRATION.md).
 
 ## Quick start
 
 ```cpp
 #include <SuperJupiterSensorQuality.h>
 
-superjupiter::Config makeConfig() {
-  superjupiter::Config c;
+superjupiter::sensor_quality::Config makeConfig() {
+  superjupiter::sensor_quality::Config c;
   c.rangeEnabled = true;
   c.minimum = -40.0f;            // Example Celsius limits, not universal limits.
   c.maximum = 125.0f;
@@ -77,19 +82,19 @@ superjupiter::Config makeConfig() {
   return c;
 }
 
-superjupiter::SensorQuality temperature(makeConfig());
+superjupiter::sensor_quality::SensorQuality temperature(makeConfig());
 
 void onFreshReading(float rawCelsius, uint32_t sampledAtMs) {
-  const superjupiter::Result result = temperature.observe(rawCelsius, sampledAtMs);
+  const superjupiter::sensor_quality::Result result = temperature.observe(rawCelsius, sampledAtMs);
   // Store result.value and result.flags together. The value is not corrected.
-  if (result.has(superjupiter::OutOfRange)) {
+  if (result.has(superjupiter::sensor_quality::OutOfRange)) {
     // Your application decides whether to log, alert or ignore this reading.
   }
 }
 
 void checkWhileWaiting(uint32_t nowMs) {
-  const superjupiter::Result current = temperature.inspect(nowMs);
-  if (current.has(superjupiter::Stale)) {
+  const superjupiter::sensor_quality::Result current = temperature.inspect(nowMs);
+  if (current.has(superjupiter::sensor_quality::Stale)) {
     // No sufficiently recent finite, in-range observation is available.
   }
 }
@@ -158,7 +163,7 @@ See the [actual CI results](https://github.com/Super-Jupiter/superjupiter-sensor
 and [validation record](https://github.com/Super-Jupiter/superjupiter-sensor-quality/blob/main/docs/VALIDATION.md) for evidence and limitations.
 
 ```sh
-cmake -S . -B build
+cmake -S . -B build -DSUPERJUPITER_SENSOR_QUALITY_BUILD_TESTS=ON
 cmake --build build
 ctest --test-dir build --output-on-failure
 ```
@@ -171,7 +176,7 @@ retries or transport is included. Monitor calls must be serialised by the caller
 - Validate the synthetic example on real ESP32 hardware.
 - Add an accurately documented integration with an established sensor driver.
 - Publish measured memory and timing results for exact board/compiler versions.
-- Complete registry propagation and keep Arduino/PlatformIO listings current.
+- Keep Arduino/PlatformIO package consumer checks and release records current.
 
 ## Contributing and support
 
@@ -187,3 +192,17 @@ devices and operational platforms. This library is a standalone, free component
 for the wider developer community, under the [MIT licence](https://github.com/Super-Jupiter/superjupiter-sensor-quality/blob/main/LICENSE).
 
 No SuperJupiter service is required to use it. Contact: **info@superjupiter.net**.
+
+## CMake applications
+
+```cmake
+add_subdirectory(path/to/superjupiter-sensor-quality)
+target_link_libraries(your_application PRIVATE SuperJupiter::SensorQuality)
+```
+
+Tests, examples and install rules default to OFF when included as a subproject.
+For an installed package, use `find_package(SuperJupiterSensorQuality 0.2 CONFIG REQUIRED)`
+and the same target. See [build and release conventions](https://github.com/Super-Jupiter/superjupiter-sensor-quality/blob/main/docs/CONVENTIONS.md).
+
+Do not compile this library with fast-math or finite-math-only assumptions:
+invalid-number detection requires non-finite values to retain their meaning.

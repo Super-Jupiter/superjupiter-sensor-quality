@@ -6,7 +6,7 @@
 #include <limits>
 #include <string>
 
-using namespace superjupiter;
+using namespace superjupiter::sensor_quality;
 static unsigned checks = 0;
 #define CHECK(expression) do { ++checks; if (!(expression)) { \
   std::cerr << __FILE__ << ':' << __LINE__ << ": " #expression "\n"; std::exit(1); \
@@ -247,6 +247,79 @@ static void long_stream_and_independent_channels() {
   CHECK(flagName(Stuck) == std::string("possibly_stuck"));
 }
 
+static void half_range_and_saturation_boundaries() {
+  const uint32_t limit = 0x7fffffffUL;
+  Config c;
+  c.expectedIntervalMs = limit;
+  c.staleAfterMs = limit;
+  c.stuckAfterMs = limit;
+  CHECK(SensorQuality::validConfig(c));
+  SensorQuality q(c);
+  q.observe(1.0f, 0);
+  CHECK(!q.inspect(limit - 1).has(Stale));
+  CHECK(q.inspect(limit).has(Stale));
+  Result boundary = q.observe(1.0f, limit);
+  CHECK(!boundary.has(InvalidTimestamp));
+  CHECK(!boundary.has(SampleGap));
+  CHECK(!boundary.hasRate);  // Stale-length interruption breaks continuity.
+  q.reset();
+  q.observe(1.0f, 0);
+  CHECK(q.observe(2.0f, limit + 1).has(InvalidTimestamp));
+  CHECK(q.inspect(0).value == 1.0f);
+
+  Config ages;
+  ages.staleAfterMs = 100;
+  ages.stuckAfterMs = 100;
+  SensorQuality stale(ages);
+  stale.observe(1.0f, 0);
+  uint32_t at = 0;
+  for (unsigned i = 0; i < 8; ++i) {
+    at += 1000000000UL;
+    CHECK(stale.observe(std::numeric_limits<float>::quiet_NaN(), at).has(Stale));
+  }
+  ages.staleAfterMs = 0;
+  SensorQuality longStuck(ages);
+  longStuck.observe(1.0f, 0);
+  at = 0;
+  for (unsigned i = 0; i < 8; ++i) {
+    at += 1000000000UL;
+    CHECK(longStuck.observe(1.0f, at).has(Stuck));
+  }
+  CHECK(!longStuck.observe(2.0f, at + 1).has(Stuck));
+}
+
+static void numeric_and_combined_flag_boundaries() {
+  Config c;
+  c.maxRatePerSecond = 1;
+  c.staleAfterMs = 500;
+  SensorQuality q(c);
+  q.observe(-std::numeric_limits<float>::max(), 0);
+  Result extreme = q.observe(std::numeric_limits<float>::max(), 1);
+  CHECK(extreme.has(RateExceeded));
+  CHECK(extreme.value == std::numeric_limits<float>::max());
+  // A target with float-width double may overflow; the flag is still required.
+  CHECK(!extreme.hasRate || extreme.ratePerSecond > 1.0);
+  q.reset();
+  CHECK(q.observe(-0.0f, 0).healthy());
+  CHECK(std::signbit(q.inspect(0).value));
+  CHECK(q.observe(0.0f, 1).ratePerSecond == 0.0);
+  Config all = configured();
+  SensorQuality combined(all);
+  combined.observe(20.0f, 0);
+  Result bad = combined.observe(200.0f, 500);
+  CHECK(bad.has(OutOfRange));
+  CHECK(bad.has(SampleGap));
+  CHECK(bad.has(Stale));
+  CHECK(!bad.hasRate);
+  Result rejected = combined.observe(21.0f, 500);
+  CHECK(rejected.has(InvalidTimestamp));
+  CHECK(combined.inspect(500).value == 200.0f);
+  CHECK(combined.inspect(500).has(OutOfRange));
+  CHECK(!combined.observe(21.0f, 501).hasRate);
+  CHECK(std::string(flagName(None)) == "healthy");
+  CHECK(std::string(flagName(static_cast<Flag>(0xffff))) == "unknown");
+}
+
 int main() {
   initial_and_reset();
   range_and_invalid_values();
@@ -256,6 +329,8 @@ int main() {
   timestamp_contract();
   bad_configuration();
   long_stream_and_independent_channels();
+  half_range_and_saturation_boundaries();
+  numeric_and_combined_flag_boundaries();
   std::cout << "PASS: " << checks << " checks; SensorQuality instance: "
             << sizeof(SensorQuality) << " bytes on this host\n";
 }
