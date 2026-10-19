@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <limits>
+#include <string>
 
 using namespace superjupiter;
 static unsigned checks = 0;

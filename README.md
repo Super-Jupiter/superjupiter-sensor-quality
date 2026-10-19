@@ -34,7 +34,7 @@ Your sensor driver -> raw value + sample timestamp -> SensorQuality -> quality f
 
 1. Download the source ZIP from [Releases](https://github.com/Super-Jupiter/superjupiter-sensor-quality/releases).
 2. In Arduino IDE choose **Sketch > Include Library > Add .ZIP Library**.
-3. Open **File > Examples > SuperJupiter SensorQuality > SyntheticTemperature**.
+3. Open **File > Examples > SuperJupiterSensorQuality > SyntheticTemperature**.
 4. Select your board, upload and open Serial Monitor at **115200 baud**.
 
 Library Manager registration is not yet complete. Use ZIP installation for now.
