@@ -1,5 +1,10 @@
 # Validation record
 
+## Release 0.1.2
+
+Registry README link and version metadata update only. The monitor and tests are
+unchanged from 0.1.0. **Physical hardware validation remains pending.**
+
 ## Release 0.1.1
 
 Packaging and registry documentation update only; the monitor and tests are

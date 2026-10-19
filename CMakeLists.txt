@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(SuperJupiterSensorQuality VERSION 0.1.1 LANGUAGES CXX)
+project(SuperJupiterSensorQuality VERSION 0.1.2 LANGUAGES CXX)
 add_library(SuperJupiterSensorQuality INTERFACE)
 target_include_directories(SuperJupiterSensorQuality INTERFACE src)
 target_compile_features(SuperJupiterSensorQuality INTERFACE cxx_std_11)

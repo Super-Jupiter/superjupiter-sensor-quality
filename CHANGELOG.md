@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.2 - 2026-10-19
+
+- Use absolute documentation/licence links so the README works on registry pages.
+- Add the live PlatformIO installation link.
+- No sensor-monitor or test changes. Physical hardware validation remains pending.
+
 ## 0.1.1 - 2026-10-19
 
 - Include API documentation, validation notes and host tests in PlatformIO exports.

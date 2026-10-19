@@ -1,7 +1,7 @@
 # SuperJupiter SensorQuality
 
 [![CI](https://github.com/Super-Jupiter/superjupiter-sensor-quality/actions/workflows/ci.yml/badge.svg)](https://github.com/Super-Jupiter/superjupiter-sensor-quality/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/Super-Jupiter/superjupiter-sensor-quality/blob/main/LICENSE)
 [![Release](https://img.shields.io/github/v/release/Super-Jupiter/superjupiter-sensor-quality?include_prereleases)](https://github.com/Super-Jupiter/superjupiter-sensor-quality/releases)
 
 **Flag suspicious sensor readings without changing the raw data.**
@@ -48,14 +48,14 @@ Pin the release explicitly in your project's `platformio.ini`:
 
 ```ini
 lib_deps =
-    https://github.com/Super-Jupiter/superjupiter-sensor-quality.git#v0.1.1
+    https://github.com/Super-Jupiter/superjupiter-sensor-quality.git#v0.1.2
 ```
 
-The PlatformIO Registry package name is `superjupiter/SuperJupiterSensorQuality`.
-Once the registry has processed the published package, it can be installed as:
+The [PlatformIO Registry package](https://registry.platformio.org/libraries/superjupiter/SuperJupiterSensorQuality)
+is `superjupiter/SuperJupiterSensorQuality`. Install it as:
 
 ```ini
-lib_deps = superjupiter/SuperJupiterSensorQuality@^0.1.1
+lib_deps = superjupiter/SuperJupiterSensorQuality@^0.1.2
 ```
 
 ## Quick start
@@ -117,7 +117,7 @@ Flags can occur together. A constant temperature can be entirely legitimate;
 `Stuck` is a prompt to investigate, not a diagnosis. All configurable checks are
 disabled by default. Invalid numbers and timestamp ordering are always checked.
 
-See [API and exact semantics](docs/API.md) before using flags to drive decisions.
+See [API and exact semantics](https://github.com/Super-Jupiter/superjupiter-sensor-quality/blob/main/docs/API.md) before using flags to drive decisions.
 
 ## Try it without hardware
 
@@ -155,7 +155,7 @@ every board has been physically tested.
 CI runs host tests with GCC and Clang, including address/undefined-behaviour
 sanitisers, and compiles both examples for ESP32, ESP32-S3, ESP32-C3 and Arduino Uno.
 See the [actual CI results](https://github.com/Super-Jupiter/superjupiter-sensor-quality/actions)
-and [validation record](docs/VALIDATION.md) for evidence and limitations.
+and [validation record](https://github.com/Super-Jupiter/superjupiter-sensor-quality/blob/main/docs/VALIDATION.md) for evidence and limitations.
 
 ```sh
 cmake -S . -B build
@@ -177,12 +177,13 @@ retries or transport is included. Monitor calls must be serialised by the caller
 
 Bug reports and small, well-tested contributions are welcome. Include settings,
 timestamps, expected behaviour and a minimal reproduction. Read
-[CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md).
+[CONTRIBUTING.md](https://github.com/Super-Jupiter/superjupiter-sensor-quality/blob/main/CONTRIBUTING.md)
+and [SECURITY.md](https://github.com/Super-Jupiter/superjupiter-sensor-quality/blob/main/SECURITY.md).
 
 ## About SuperJupiter
 
 [SuperJupiter](https://www.superjupiter.net) builds custom software, connected
 devices and operational platforms. This library is a standalone, free component
-for the wider developer community, under the [MIT licence](LICENSE).
+for the wider developer community, under the [MIT licence](https://github.com/Super-Jupiter/superjupiter-sensor-quality/blob/main/LICENSE).
 
 No SuperJupiter service is required to use it. Contact: **info@superjupiter.net**.

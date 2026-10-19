@@ -1,6 +1,6 @@
 {
   "name": "SuperJupiterSensorQuality",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Sensor data quality checks by SuperJupiter for Arduino, ESP32 and C++11. Preserve raw readings and flag invalid data, range, rate, gaps, stale and possibly stuck signals. Hardware validation pending.",
   "keywords": ["sensor", "data-quality", "esp32", "arduino", "temperature"],
   "repository": {"type": "git", "url": "https://github.com/Super-Jupiter/superjupiter-sensor-quality.git"},
