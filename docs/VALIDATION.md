@@ -1,5 +1,12 @@
 # Validation record
 
+## Release 0.1.1
+
+Packaging and registry documentation update only; the monitor and tests are
+unchanged from 0.1.0. The PlatformIO export now includes these validation notes,
+the API reference and host tests. Consult CI for the exact tagged commit.
+**Physical hardware validation remains pending.**
+
 ## Release 0.1.0
 
 **Physical hardware validation: pending.** No thermocouple, ADC, ESP32 or other

@@ -37,7 +37,10 @@ Your sensor driver -> raw value + sample timestamp -> SensorQuality -> quality f
 3. Open **File > Examples > SuperJupiterSensorQuality > SyntheticTemperature**.
 4. Select your board, upload and open Serial Monitor at **115200 baud**.
 
-Library Manager registration is not yet complete. Use ZIP installation for now.
+Arduino has accepted [Library Manager registration](https://github.com/arduino/library-registry/pull/9427).
+Search for **SuperJupiterSensorQuality** in Library Manager once the index updates.
+Registration acceptance and download-index availability are separate steps; ZIP
+installation remains available while the index is updating.
 
 ### PlatformIO
 
@@ -45,10 +48,15 @@ Pin the release explicitly in your project's `platformio.ini`:
 
 ```ini
 lib_deps =
-    https://github.com/Super-Jupiter/superjupiter-sensor-quality.git#v0.1.0
+    https://github.com/Super-Jupiter/superjupiter-sensor-quality.git#v0.1.1
 ```
 
-No PlatformIO Registry listing is claimed yet.
+The PlatformIO Registry package name is `superjupiter/SuperJupiterSensorQuality`.
+Once the registry has processed the published package, it can be installed as:
+
+```ini
+lib_deps = superjupiter/SuperJupiterSensorQuality@^0.1.1
+```
 
 ## Quick start
 
@@ -163,7 +171,7 @@ retries or transport is included. Monitor calls must be serialised by the caller
 - Validate the synthetic example on real ESP32 hardware.
 - Add an accurately documented integration with an established sensor driver.
 - Publish measured memory and timing results for exact board/compiler versions.
-- Submit the reviewed release to Arduino Library Manager and PlatformIO Registry.
+- Complete registry propagation and keep Arduino/PlatformIO listings current.
 
 ## Contributing and support
 

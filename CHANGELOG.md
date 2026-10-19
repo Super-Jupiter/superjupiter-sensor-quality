@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.1 - 2026-10-19
+
+- Include API documentation, validation notes and host tests in PlatformIO exports.
+- Add explicit pending hardware-validation wording to the registry description.
+- Document accepted Arduino registration and the full SuperJupiter package name.
+- No sensor-monitor behaviour changes. Physical hardware validation remains pending.
+
 ## 0.1.0 - 2026-10-19
 
 Initial public preview of SuperJupiter SensorQuality.
